@@ -1,3 +1,4 @@
+//A standard config file with multiple scenes
 var config = {
   type: Phaser.AUTO,
   width: 800,

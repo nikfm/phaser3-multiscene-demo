@@ -1,3 +1,5 @@
+//Main level, just an extension of the Phaser 3 tutorial
+//with additional functions for changing scenes
 class LevelOne extends Phaser.Scene {
   constructor() {
     super({
@@ -100,15 +102,15 @@ class LevelOne extends Phaser.Scene {
       fill: '#000'
     });
 
-    gameOverText = this.add.text(300, 200, 'Game Over', {
+    nextLevelText = this.add.text(300, 200, 'Next Level', {
       fontSize: '32px',
       fill: '#000',
     });
-    gameOverText.setAlpha(0);
-    gameOverText.setInteractive();
-    gameOverText.on('pointerover', function() {gameOverText.setStyle({fontSize: '32px',fill: '#f00'})});
-    gameOverText.on('pointerover', function() {gameOverText.setStyle({fontSize: '32px',fill: '#000'})});
-    gameOverText.on('pointerdown',goToNextScene,this);
+    nextLevelText.setAlpha(0);
+    nextLevelText.setInteractive();
+    nextLevelText.on('pointerover', function() {nextLevelText.setStyle({fontSize: '32px',fill: '#f00'})});
+    nextLevelText.on('pointerover', function() {nextLevelText.setStyle({fontSize: '32px',fill: '#000'})});
+    nextLevelText.on('pointerdown',goToNextScene,this);
 
     //  Collide the player and the stars with the platforms
     this.physics.add.collider(player, platforms);
@@ -153,7 +155,7 @@ var platforms;
 var cursors;
 var score = 0;
 var scoreText;
-var gameOverText;
+var nextLevelText;
 var levelStopped = false;
 
 function collectStar(player, star) {
@@ -163,6 +165,7 @@ function collectStar(player, star) {
   score += 10;
   scoreText.setText('Score: ' + score);
 
+  //When the player collects two stars, display the Next Level test
   if (stars.countActive(true) === 10) {
     //  A new batch of stars to collect
     // stars.children.iterate(function(child) {
@@ -170,7 +173,7 @@ function collectStar(player, star) {
     //   child.enableBody(true, child.x, 0, true, true);
     //
     // });
-    gameOver(player);
+    nextLevel(player);
     var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
 
     var bomb = bombs.create(x, 16, 'bomb');
@@ -188,7 +191,7 @@ function hitBomb(player, bomb) {
     fill: '#000',
   });
   restartText.setInteractive();
-  restartText.on('pointerdown',() => this.scene.restart(),this);
+  restartText.on('pointerdown',() => {this.scene.restart();score = 0;});
 
   this.physics.pause();
 
@@ -198,9 +201,8 @@ function hitBomb(player, bomb) {
 
 }
 
-function gameOver(player) {
-  console.log("game over");
-  gameOverText.setAlpha(1);
+function nextLevel(player) {
+  nextLevelText.setAlpha(1);
   player.setTint(0xff0000);
 }
 
@@ -209,12 +211,4 @@ function goToNextScene() {
   levelStopped = true;
   game.scene.stop('LevelOne');
   game.scene.start('LevelTwo');
-  // this.physics.pause();
-
-  // game.scene.switch('LevelTwo');
-
-}
-
-function restart() {
-  this.scene.restart();
 }
